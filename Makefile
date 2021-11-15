@@ -8,10 +8,10 @@ CC = g++
 nn: read_data.o utils.o nn.o
 	$(CC) $(CFLAGS) read_data.o utils.o nn.o -o nn
 
-read_data.o:	read_data.cpp read_data.hpp
+read_data.o: read_data.cpp read_data.hpp
 	$(CC) $(CFLAGS) -c read_data.cpp
 
-utils.o:	utils.cpp utils.hpp
+utils.o: utils.cpp utils.hpp
 	$(CC) $(CFLAGS) -c utils.cpp
 
 nn.o: nn.cpp define.hpp read_data.hpp utils.hpp
