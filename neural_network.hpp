@@ -12,5 +12,6 @@ using namespace Eigen;
 
 // function that trains plain NN
 void PlainNN(MatrixXd X, MatrixXd Y, MatrixXd Y_onehot, MatrixXd &w_1, MatrixXd &w_2);
+void TestPlainNN(MatrixXd X, MatrixXd Y, MatrixXd Y_onehot, MatrixXd &w_1, MatrixXd &w_2);
 
-#endif 
+#endif

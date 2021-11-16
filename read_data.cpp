@@ -28,7 +28,7 @@ void ReadData(string inputfile, vector<vector<double> > &X, vector<double> &Y) {
 
     if (fin.is_open())              // if the input file is open
     {
-        cout << "File opened successfully " << endl; 
+        cout << "File " << inputfile << " opened successfully " << endl; 
 
         while (getline(fin, line))    // storing the line of input file on the variable line
         {

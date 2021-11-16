@@ -50,13 +50,19 @@ int main()
     MatrixXd X = MatrixXd::Random(3,3);
     cout << X << endl;
 
-    VectorXi argmax(X.rows());
-    cout << argmax.rows() << "," << argmax.cols() << endl;
-    for (int i = 0; i < X.rows(); i++){
-        // cout << i << endl;
-        X.row(i).maxCoeff(&argmax[i]);
-    }
-    cout << argmax << endl;
+    MatrixXd Y = MatrixXd::Random(3,3);
+    cout << Y << endl;
+
+    MatrixXd Z = X- Y;
+    cout << Z << endl;
+
+    // VectorXi argmax(X.rows());
+    // cout << argmax.rows() << "," << argmax.cols() << endl;
+    // for (int i = 0; i < X.rows(); i++){
+    //     // cout << i << endl;
+    //     X.row(i).maxCoeff(&argmax[i]);
+    // }
+    // cout << argmax << endl;
 
     // MatrixXd X_log = X.array().log();
     // cout << X_log << endl;

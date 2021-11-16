@@ -80,26 +80,27 @@ double ComputeLoss(MatrixXd Y, MatrixXd Y_hat)
 
 }
 
-float ComputeAccuracy(MatrixXd Y, MatrixXd Y_hat)
+double ComputeCount(MatrixXd Y, MatrixXd Y_hat)
 {
     // cout << Y_hat.row(0) << endl;
     // cout << Y_hat.rows() << "," << Y_hat.cols() << endl;
 
-    VectorXi Y_hat_maxVal_idx(Y.rows());    // creating a column vector of dimension (Y.rows x 1) to store indexes
+    VectorXd Y_hat_maxVal_idx(Y.rows());    // creating a column vector of dimension (Y.rows x 1) to store indexes
 
     for(int i = 0; i < Y_hat.rows(); i++)   // for each row in Y_hat
     {
         Y_hat.row(i).maxCoeff(&Y_hat_maxVal_idx[i]);    // storing the index of maximum value for row i at Y_hat_maxVal_idx[i]
     }
 
-    // cout << Y_hat_maxVal_idx << endl;
-    // cout << Y << endl;
+    // cout << Y_hat_maxVal_idx(0,0) << endl;
+    // cout << Y(0,0) << endl;
     // cout << Y_hat_maxVal_idx.rows() << "," << Y_hat_maxVal_idx.cols() << endl;
     // cout << Y.rows() << "," << Y.cols() << endl;
 
-    int count = 0;
-    for (int j; j < Y.rows(); j++)
+    double count = 0.0;
+    for (int j = 0; j < Y.rows(); j++)
     {
+        // cout << Y_hat_maxVal_idx(j,0) << "," << Y(j,0) << endl;
         if (Y_hat_maxVal_idx(j,0)==Y(j,0))
         {
             count += 1;
@@ -107,13 +108,7 @@ float ComputeAccuracy(MatrixXd Y, MatrixXd Y_hat)
     }
     // cout << "  Count: " << count << endl;
 
-    float accuracy = ((float) count/Y.rows() * 100.0);
-    string res = to_string(accuracy) + " %";
-
-    // cout << "  Accuracy: " << res << endl;
-
-
-    return accuracy;
+    return count;
 }
 
 MatrixXd ForwardPass(MatrixXd X, MatrixXd w_1, MatrixXd w_2, MatrixXd &Z_1, MatrixXd &drelu_1)
