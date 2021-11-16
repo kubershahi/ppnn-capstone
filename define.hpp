@@ -9,7 +9,8 @@
 extern int N_train;   // Number of Training Samples
 extern int N_test;    // Number of Testing Samples
 extern int d;         // Number of Features
-extern int m;         // Number of Output Classes
+extern int d_1;       // Number of neurons in the first layer
+extern int m;         // Number of Output Classes in the last layer
 extern int B;         // Batch Size
 extern int NUM_EPOCHS;// Number of Epochs
 

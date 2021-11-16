@@ -4,6 +4,6 @@
 #include <vector>
 #include <string>
 
-void read_data(std::string inputfile, std::vector<std::vector<double> > &X, std::vector<double> &Y);
+void ReadData(std::string inputfile, std::vector<std::vector<double> > &X, std::vector<double> &Y);
 
 #endif

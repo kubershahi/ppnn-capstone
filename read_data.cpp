@@ -18,7 +18,7 @@ Output: returns dataset, data in two-dimensional vector.
 using namespace std;
 
 //function to read any dataset with all numerical values like MNIST dataset.
-void read_data(string inputfile, vector<vector<double> > &X, vector<double> &Y) {
+void ReadData(string inputfile, vector<vector<double> > &X, vector<double> &Y) {
 
     ifstream fin;                     // declaring the input file stream
     fin.open(inputfile);              // opening the inputfile
