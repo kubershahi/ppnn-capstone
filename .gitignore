@@ -39,3 +39,6 @@
 
 #Dataset
 datasets/mnist
+
+#VS Code
+*.vscode
