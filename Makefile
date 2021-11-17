@@ -5,6 +5,9 @@
 CC = g++
 # CFLAGS  = -g -Wall
 
+bb: utils.o bb.o
+	$(CC) $(CFLAGS) utils.o bb.o -o bb
+
 nn: read_data.o utils.o neural_network.o nn.o
 	$(CC) $(CFLAGS) read_data.o utils.o neural_network.o nn.o -o nn
 
@@ -16,6 +19,9 @@ utils.o: utils.cpp utils.hpp
 
 neural_network.o: neural_network.cpp neural_network.hpp
 	$(CC) $(CFLAGS) -c neural_network.cpp
+
+bb.o: bb.cpp define.hpp utils.hpp 
+	$(CC) $(CFLAGS) -c bb.cpp
 
 nn.o: nn.cpp define.hpp read_data.hpp utils.hpp neural_network.hpp 
 	$(CC) $(CFLAGS) -c nn.cpp
