@@ -30,4 +30,4 @@ nn.o: nn.cpp define.hpp read_data.hpp utils.hpp neural_network.hpp
 # To start over from scratch, type 'make clean'. This removes the executable file, 
 # as well as old .o objectfiles and *~ backup files:
 clean: 
-	$(RM) nn file *.o *~
+	$(RM) nn bb file *.o *~
