@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 #include <Eigen/Dense>
 
 using namespace std;
@@ -43,6 +44,7 @@ MatrixXd Relu(MatrixXd S_1, MatrixXd &drelu_1)
 {
     drelu_1 = S_1.unaryExpr(&DRelu);    // computing derivative of relu for each value in matrix
     MatrixXd res = S_1.cwiseProduct(drelu_1);   // element-wise corresponding multiplication
+
     return res.cwiseAbs();  // returning the absolute value          
 }
 
@@ -53,7 +55,7 @@ MatrixXd Softmax(MatrixXd S2)
     MatrixXd S2_e = S2.array().exp();  // applying e^x to every element in matrix
     // cout << S2_e.row(0) << endl;
 
-    VectorXd S2_sum= S2_e.rowwise().sum(); // finding the row wise sum 
+    VectorXd S2_sum= S2_e.rowwise().sum(); // finding the row wise sum VectorXd is column vector
     // cout << S2_sum(0,0) << endl;
 
     for (int i = 0; i < S2.rows(); i++) // for each row in matrix 
@@ -136,3 +138,172 @@ MatrixXd ForwardPass(MatrixXd X, MatrixXd w_1, MatrixXd w_2, MatrixXd &Z_1, Matr
 
     return Z_2; // returning the final output
 }
+
+// function that converts a single number from double to unit64
+uint64_t FloatToUint64(double x)
+{
+    uint64_t res;
+    if ( x >= 0)
+    {
+        res = (uint64_t) (x * SCALING_FACTOR);
+    }
+    else
+    {
+        x = abs(x * SCALING_FACTOR);
+        res = (uint64_t) pow(2,64) - x;
+    }
+    return res;
+}
+
+// function that converts double Matrix to unit64 Matrix
+MatrixXi64 FloatToUint64(MatrixXd X)
+{
+    MatrixXi64 res(X.rows(), X.cols());
+
+    for (int i = 0; i < X.rows(); i++)
+    {
+        for (int j = 0; j < X.cols(); j++)
+        {
+            double x = X(i,j);
+            if ( x >= 0)
+            {
+                res(i,j) = (uint64_t) (x * SCALING_FACTOR);
+            }
+            else
+            {
+                x = abs(x * SCALING_FACTOR);
+                res(i,j) = (uint64_t) pow(2,64) - x;
+            }
+        }
+    } 
+    return res;
+}
+
+
+//function that converts a single unit64 number to double
+double Uint64ToFloat(uint64_t x)
+{
+    double res;
+    if (x & (1UL << 63))
+    {
+        res = - ((double) pow(2,64) - x)/SCALING_FACTOR;
+    }
+    else
+    {
+        res = ((double) x)/SCALING_FACTOR;
+    }
+
+    return res;
+}
+
+
+//function that coverts unit64 matrix to double matrix
+MatrixXd Uint64ToFloat(MatrixXi64 X)
+{
+    MatrixXd res(X.rows(), X.cols());
+    for (int i = 0; i < X.rows(); i++)
+    {
+        for (int j = 0; j < X.cols(); j++)
+        {
+            uint64_t x = X(i,j);
+            if (x & (1UL << 63))
+            {
+                res(i,j) = -((double) pow(2,64) - x)/SCALING_FACTOR;
+                //cout<< res(i,j) << " is negative"<<endl;
+            }
+            else
+            {
+                res(i,j) = ((double) x)/SCALING_FACTOR;
+                //cout<< res(i,j) << " is positive"<<endl;
+            }
+        }
+    } 
+    return res;
+}
+
+
+//function that creates shares of an integer
+void Share(uint64_t X, uint64_t shares[])
+{
+	uint64_t X_0 = rand();
+	shares[0] = X_0;
+	shares[1] = X - X_0;
+}
+
+//function that creates shares of integers in a matrix
+void Share(MatrixXi64 X, MatrixXi64 shares[])
+{
+	MatrixXi64 X_0 = MatrixXi64::Random(X.rows(),X.cols());
+	shares[0] = X_0;
+	shares[1] = X - X_0;
+}
+
+
+// For integer numbers
+uint64_t Rec(uint64_t X, uint64_t Y)
+{
+	return X + Y;
+}
+
+
+// For integer matrices
+MatrixXi64 Rec(MatrixXi64 X, MatrixXi64 Y)
+{
+	return X + Y;
+}
+
+
+uint64_t Truncate(uint64_t x, int factor)
+{
+    uint64_t res;
+
+    if (x & (1UL << 63))
+    {
+        res = (uint64_t) pow(2,64) - ( (uint64_t)pow(2,64) - x)/factor;
+        //cout<< res(i,j) << " is negative"<<endl;
+    }
+    else
+    {
+        res = x/factor;
+        //cout<< res(i,j) << " is positive"<<endl;
+    }
+
+    return res;
+}
+
+// function that truncates integer values in a given matrix
+MatrixXi64 Truncate(MatrixXi64 X, int factor)
+{
+
+    MatrixXi64 res(X.rows(), X.cols());
+    for (int i = 0; i < X.rows(); i++)
+    {
+        for (int j = 0; j < X.cols(); j++)
+        {
+        uint64_t x = X(i,j);
+        if (x & (1UL << 63))
+        {
+            res(i,j) = (uint64_t) pow(2,64) - ( (uint64_t)pow(2,64) - x)/factor;
+            //cout<< res(i,j) << " is negative"<<endl;
+        }
+        else
+        {
+            res(i,j) = x/factor;
+            //cout<< res(i,j) << " is positive"<<endl;
+        }
+            
+        }
+    } 
+    return res;
+}
+
+// // For 64-integer inputs
+// MatrixXi64 MatMult(int i, MatrixXi64 X_0, MatrixXi64 X_1, MatrixXi64 Y_0, MatrixXi64 Y_1)
+// { 
+
+// 	MatrixXi64 product(X_0.rows(),Y_0.cols());
+// 	if (i == 1) product = -(E * F) + (A * F) + (E * B) + Z;
+// 	else if (i == 0) product = (A * F) + (E * B) + Z;
+	
+// 	return product;
+// }

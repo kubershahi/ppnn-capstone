@@ -1,7 +1,17 @@
 #ifndef DEFINE_HPP
 #define DEFINE_HPP
 
-#define SCALING_FACTOR 8192 // of 13 bits, 2^13
+/* 
+
+2^13 = 8192
+2^16 = 65536
+2^20 = 1048576
+2^24 = 16777216
+
+*/
+
+#define SCALING_FACTOR 1048576
+
 
 #include <Eigen/Dense>
 
