@@ -33,5 +33,7 @@ MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi
 uint64_t Truncate(uint64_t x, int factor);
 MatrixXi64 Truncate(MatrixXi64 X, int factor);
 
+vector<int> GetBinaryVector(uint64_t a);
+int PrivateCompare(uint64_t a, uint64_t b);
 
 #endif

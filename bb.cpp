@@ -29,6 +29,7 @@ int main()
     cout << "\t [2] Truncation Functionality: " << endl;
     cout << "\t [3] Secret Sharing functionality: " << endl;
     cout << "\t [4] Secure Matrix Multiplication functionality: " << endl;
+    cout << "\t [5] Private Compare functionality: " << endl;
 
     int selection = 0;
     cout << endl << "Enter selection: ";
@@ -220,6 +221,49 @@ int main()
         cout << endl << "Z_f: " << endl;
         cout << Z_f << endl;
 
+    }
+    else if (selection == 5)
+    {
+        MatrixXd X (2, 2);                          // Forming Matrix X 
+        X << 10.55, -5.55, 5.66, -5.77;
+        cout << endl << "Matrix X: " <<endl;
+        cout << X << endl;
+
+        MatrixXi64 X_i = FloatToUint64(X);          // converting matrix x to integer
+        cout << endl << "Matrix X mapped: " <<endl;
+        cout << X_i << endl;
+
+        uint64_t a = X_i(0,0);                      // setting the value of a
+        uint64_t b = X_i(0,1);                      // setting the value of b
+
+        int r0 = PrivateCompare(a, b);
+
+        if (r0==0)
+        {
+            cout << endl << "a>b: False" << endl;
+        }
+        else if (r0==1)
+        {
+            cout << endl << "a>b: True" << endl;
+        }
+
+        uint64_t d = X_i(1,0);                      // setting the value of a
+        uint64_t e = X_i(1,1);                      // setting the value of b
+
+        int r1 = PrivateCompare(d, e);
+
+        if (r1==0)
+        {
+            cout << endl << "a>b: False" << endl;
+        }
+        else if (r1==1)
+        {
+            cout << endl << "a>b: True" << endl;
+        }
+    }
+    else
+    {
+        cout << endl << "Invalid Input" << endl;
     }
 
     return 0;

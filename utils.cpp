@@ -2,8 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <cmath>
+#include <bitset>
+
 #include <Eigen/Dense>
+
+smallType additionModPrime[PRIME_NUMBER][PRIME_NUMBER];
+smallType multiplicationModPrime[PRIME_NUMBER][PRIME_NUMBER];
 
 using namespace std;
 using namespace Eigen;
@@ -357,3 +363,76 @@ MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi
 	
 	return prod_s;
 }
+
+vector<int> GetBinaryVector(uint64_t a)
+{
+    string a_s = bitset<64>(a).to_string(); // getting the binary representation string
+    // cout << "a: " << a_s << endl;
+
+    vector<int> a_bits;
+    for (int i = 0; i < a_s.length(); i ++ )    // converting the binary string to int array
+    {
+        a_bits.push_back((int(a_s[i]) - 48));
+    }
+
+    return a_bits;
+}
+
+int PrivateCompare(uint64_t a, uint64_t b)
+{   
+    vector<int> a_bits = GetBinaryVector(a);
+    cout << endl << "a: ";
+    for (int i = 0; i < a_bits.size(); i ++ )
+    {
+        cout << a_bits[i];
+    }
+    cout << endl;
+
+    vector<int> b_bits = GetBinaryVector(b);
+    cout << "b: ";
+    for (int i = 0; i < b_bits.size(); i ++ )
+    {
+        cout << b_bits[i];
+    }
+    cout << endl;
+
+    uint64_t c = a^b;
+    vector<int> c_bits = GetBinaryVector(c);
+    cout << "c: ";
+    for (int i = 0; i < c_bits.size(); i ++ )
+    {
+        cout << c_bits[i];
+    }
+    cout << endl;
+
+    vector<int> res;
+
+    int H = 0;
+
+    for (int i = 0; i < 64; i++)
+    {
+
+        int temp = (b_bits[i] - a_bits[i]) + 1 + H;
+        res.push_back(temp);
+        H = H + c_bits[i];
+    
+    }
+
+    int r = 0;
+
+    cout << "r: ";
+    for (int i = 0; i < res.size(); i ++ )
+    {
+        cout << res[i];
+        if (res[i]==0)
+        {
+            r = 1;
+        }
+    }
+    cout << endl;
+
+    return r;
+
+}
+
+

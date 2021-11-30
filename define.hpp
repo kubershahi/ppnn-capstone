@@ -11,7 +11,7 @@
 */
 
 #define SCALING_FACTOR 1048576
-
+#define PRIME_NUMBER 67
 
 #include <Eigen/Dense>
 
@@ -23,6 +23,9 @@ extern int d_1;       // Number of neurons in the first layer
 extern int m;         // Number of Output Classes in the last layer
 extern int B;         // Batch Size
 extern int NUM_EPOCHS;// Number of Epochs
+
+typedef uint64_t myType;
+typedef uint8_t smallType;
 
 typedef Eigen::Matrix<uint64_t, Eigen::Dynamic, Eigen::Dynamic> MatrixXi64;
 typedef Eigen::Matrix<uint64_t, 1, Eigen::Dynamic> RowVectorXi64;
