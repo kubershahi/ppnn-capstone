@@ -53,7 +53,7 @@ int main()
     MatrixXd Y = MatrixXd::Random(3,3);
     cout << Y << endl;
 
-    MatrixXd Z = X- Y;
+    MatrixXd Z = X * Y;
     cout << Z << endl;
 
     // VectorXi argmax(X.rows());

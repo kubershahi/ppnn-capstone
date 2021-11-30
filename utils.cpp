@@ -22,6 +22,7 @@ MatrixXd OnehotEncoding(MatrixXd X)
     return res;
 }
 
+
 // function that computes sigmoid activation
 double Sigmoid(double x)
 {
@@ -39,6 +40,7 @@ double DRelu(double x)
     }
 }
 
+
 // function that computes the ReLU activation
 MatrixXd Relu(MatrixXd S_1, MatrixXd &drelu_1)
 {
@@ -48,6 +50,7 @@ MatrixXd Relu(MatrixXd S_1, MatrixXd &drelu_1)
     return res.cwiseAbs();  // returning the absolute value          
 }
 
+//function that computes the Softmax activation function
 MatrixXd Softmax(MatrixXd S2)
 {
     MatrixXd res(S2.rows(), S2.cols()); // declaring a matrix of S2 dimension to hold the result
@@ -66,6 +69,7 @@ MatrixXd Softmax(MatrixXd S2)
     return res; 
 }
 
+
 // function that computes the error of a iterations using cross entropy loss function
 double ComputeLoss(MatrixXd Y, MatrixXd Y_hat)
 {   
@@ -82,6 +86,7 @@ double ComputeLoss(MatrixXd Y, MatrixXd Y_hat)
 
 }
 
+// function that computes the number of correct predicted outputs
 double ComputeCount(MatrixXd Y, MatrixXd Y_hat)
 {
     // cout << Y_hat.row(0) << endl;
@@ -113,6 +118,8 @@ double ComputeCount(MatrixXd Y, MatrixXd Y_hat)
     return count;
 }
 
+
+// function that does forward propagation 
 MatrixXd ForwardPass(MatrixXd X, MatrixXd w_1, MatrixXd w_2, MatrixXd &Z_1, MatrixXd &drelu_1)
 {   
     // cout << X.rows() << "," << X.cols() << endl;
@@ -139,6 +146,7 @@ MatrixXd ForwardPass(MatrixXd X, MatrixXd w_1, MatrixXd w_2, MatrixXd &Z_1, Matr
     return Z_2; // returning the final output
 }
 
+
 // function that converts a single number from double to unit64
 uint64_t FloatToUint64(double x)
 {
@@ -154,6 +162,7 @@ uint64_t FloatToUint64(double x)
     }
     return res;
 }
+
 
 // function that converts double Matrix to unit64 Matrix
 MatrixXi64 FloatToUint64(MatrixXd X)
@@ -180,7 +189,7 @@ MatrixXi64 FloatToUint64(MatrixXd X)
 }
 
 
-//function that converts a single unit64 number to double
+// function that converts a single unit64 number to double
 double Uint64ToFloat(uint64_t x)
 {
     double res;
@@ -197,7 +206,7 @@ double Uint64ToFloat(uint64_t x)
 }
 
 
-//function that coverts unit64 matrix to double matrix
+//function that converts unit64 matrix to double matrix
 MatrixXd Uint64ToFloat(MatrixXi64 X)
 {
     MatrixXd res(X.rows(), X.cols());
@@ -230,29 +239,31 @@ void Share(uint64_t X, uint64_t shares[])
 	shares[1] = X - X_0;
 }
 
-//function that creates shares of integers in a matrix
+
+// function that creates shares of integers in a matrix
 void Share(MatrixXi64 X, MatrixXi64 shares[])
 {
-	MatrixXi64 X_0 = MatrixXi64::Random(X.rows(),X.cols());
+	MatrixXi64 X_0 = MatrixXi64::Random(X.rows(),X.cols())/10000;
 	shares[0] = X_0;
 	shares[1] = X - X_0;
 }
 
 
-// For integer numbers
+// function that reconstructs the share of an integer
 uint64_t Rec(uint64_t X, uint64_t Y)
 {
 	return X + Y;
 }
 
 
-// For integer matrices
+// function that reconstructs the share of an integer in a matrix
 MatrixXi64 Rec(MatrixXi64 X, MatrixXi64 Y)
 {
 	return X + Y;
 }
 
 
+// function that truncates a number by a given factor
 uint64_t Truncate(uint64_t x, int factor)
 {
     uint64_t res;
@@ -270,6 +281,7 @@ uint64_t Truncate(uint64_t x, int factor)
 
     return res;
 }
+
 
 // function that truncates integer values in a given matrix
 MatrixXi64 Truncate(MatrixXi64 X, int factor)
@@ -297,13 +309,51 @@ MatrixXi64 Truncate(MatrixXi64 X, int factor)
     return res;
 }
 
-// // For 64-integer inputs
-// MatrixXi64 MatMult(int i, MatrixXi64 X_0, MatrixXi64 X_1, MatrixXi64 Y_0, MatrixXi64 Y_1)
-// { 
 
-// 	MatrixXi64 product(X_0.rows(),Y_0.cols());
-// 	if (i == 1) product = -(E * F) + (A * F) + (E * B) + Z;
-// 	else if (i == 0) product = (A * F) + (E * B) + Z;
+// function that generates Beavers Triplet 
+void TripletGeneration( int X_row , int X_col, int Y_row , int Y_col, MatrixXi64 triplet_shares[])
+{
+    MatrixXi64 A = MatrixXi64::Random(X_row, X_col)/10000; // masks X
+    // cout << endl << "A : " << endl;
+    // cout << A << endl;
+
+    MatrixXi64 B = MatrixXi64::Random(Y_row, Y_col)/10000; // masks Y
+    // cout << endl << "B : " << endl;
+    // cout << B << endl;
+
+    MatrixXi64 C = A * B;
+    // cout << endl << "C : " << endl;
+    // cout << C << endl;
+
+    MatrixXi64 shares[2];
+
+    Share(A, shares);
+    triplet_shares[0] = shares[0]; 
+    triplet_shares[1] = shares[1];
+
+    Share(B, shares);
+    triplet_shares[2] = shares[0]; 
+    triplet_shares[3] = shares[1];
+
+    Share(C, shares);
+    triplet_shares[4] = shares[0]; 
+    triplet_shares[5] = shares[1];
+}
+
+// function that does the Beaver Triplet based secure multiplication
+MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi64 F, MatrixXi64 C_s)
+{ 
+
+    MatrixXi64 prod_s(X_s.rows(), Y_s.cols());
+
+    if (i == 0)
+    {
+        prod_s = X_s * F + E * Y_s + C_s;
+    }
+    else if ( i== 1)
+    {
+        prod_s = - E * F + X_s * F + E * Y_s + C_s;
+    }
 	
-// 	return product;
-// }
+	return prod_s;
+}

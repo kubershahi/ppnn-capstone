@@ -27,6 +27,9 @@ void Share(MatrixXi64 X, MatrixXi64 shares[]);
 uint64_t Rec(uint64_t X, uint64_t Y);
 MatrixXi64 Rec(MatrixXi64 X, MatrixXi64 Y);
 
+void TripletGeneration( int X_row , int X_col, int Y_row , int Y_col, MatrixXi64 triplet_shares[]);
+MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi64 F, MatrixXi64 C_s);
+
 uint64_t Truncate(uint64_t x, int factor);
 MatrixXi64 Truncate(MatrixXi64 X, int factor);
 

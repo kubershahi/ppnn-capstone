@@ -21,104 +21,206 @@ int NUM_EPOCHS; // Number of Epochs
 
 int main()
 {
-    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]"); // formatting option while printing Eigen Matrices
+    
 
+    cout << endl << "Select Building Blocks (enter corresponsing digit): " << endl;
+    cout << endl;
+    cout << "\t [1] Mapping and Reversing Mapping functionality: " << endl;
+    cout << "\t [2] Truncation Functionality: " << endl;
+    cout << "\t [3] Secret Sharing functionality: " << endl;
+    cout << "\t [4] Secure Matrix Multiplication functionality: " << endl;
+
+    int selection = 0;
+    cout << endl << "Enter selection: ";
+    cin >> selection; 
+
+    IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]"); // formatting option while printing Eigen Matrices
     cout << fixed;
 
+    if (selection == 1)
+    {
+        // Mapping and Reverse Mapping functionality 
+        MatrixXd X(2,2);
+        X << 456.00, -0.987654, 5.66897, 0.88768;   // Random 2 x 2 Matrix
+        cout << endl << "Matrix X: " << endl;
+        cout << endl <<  X << endl;
 
-    // double X = -10.15723545348;
-    // double Y = 5.23423452345;
+        MatrixXi64 X_i = FloatToUint64(X);          // converting to integer ring  
+        cout << endl << "Matrix X mapped to Z_L: " << endl;
+        cout << endl << X_i << endl;
 
-    // cout << endl << "X: " << X << endl;
-    // cout << "Y: " << Y << endl;
+        MatrixXd X_f = Uint64ToFloat(X_i);          // converting back to floats
+        cout << endl << "Matrix X mapped back to floats: " << endl;
+        cout << endl << X_f << endl << endl;
 
-    // double Z = X * Y;
-    // cout << endl << "Z (X * Y: floating arithmetic): " << Z << endl << endl;
+    }
+    else if (selection == 2)
+    {   
+        // Truncation Fucntionality 
 
-    // uint64_t X_i = FloatToUint64(X); // mapping X to integer
-    // uint64_t Y_i = FloatToUint64(Y); // mapping Y to integer
+        MatrixXd X = MatrixXd::Random(2,2);         // Random Matrix X
+        cout << endl << "Matrix X: " << endl;       
+        cout << endl << X << endl;
 
-    // // secret sharing setting
-    // cout << "=== Secret Sharing Setting (creating shares of X and Y, multiplying and then truncating them, then recreating Z) ==="<<endl << endl;
+        MatrixXd Y = MatrixXd::Random(2,2);         // Random Matrix Y
+        cout << endl << "Matrix Y: " << endl;
+        cout << endl << Y << endl;
 
-    // uint64_t shares[2];
-    // Share(X_i, shares);               // creating shares of XX
-    // uint64_t X_i0 = shares[0];
-    // uint64_t X_i1 = shares[1];
+        MatrixXd Z = X * Y;                         // computing Z in floats itself
+        cout << endl << "Matrix Z (floating point multiplication): " << endl;
+        cout << endl << Z  << endl;
 
-    // Share(Y_i, shares);               // creating shares of XX
-    // uint64_t Y_i0 = shares[0];
-    // uint64_t Y_i1 = shares[1];
+        MatrixXi64 X_i = FloatToUint64(X);          // converting X to integer ring
+        // cout << endl << "Matrix X mapped " << endl;
+        // cout << endl << X_i  << endl;
 
-    // uint64_t Z_i0 = X_i0 * Y_i0 + X_i0 * Y_i1;  // 0th share of Z
-    // uint64_t Z_i1 = X_i1 * Y_i0 + X_i1 * Y_i1;  // 1st share of Z
+        MatrixXi64 Y_i = FloatToUint64(Y);          // converting Y to integer ring
+        // cout << endl << "Matrix X mapped " << endl;
+        // cout << endl << Y_i  << endl;
 
-    // // truncating both the shares, and then recreating
-    // uint64_t Z_i0_t = Truncate(Z_i0, SCALING_FACTOR);
-    // // cout << "Truncated 0th share of Z: " << Z_i0_t << endl;
+        MatrixXi64 Z_i = X_i * Y_i;                 // computing Z in ring
+        // cout << endl << "Matrix Z (X_i * Y_i) " << endl;
+        // cout << endl << Z_i  << endl;
 
-    // uint64_t Z_i1_t = Truncate(Z_i1, SCALING_FACTOR);
-    // // cout << "Truncated 1st share of Z: " << Z_i1_t << endl;
+        MatrixXi64 Z_t = Truncate(Z_i, SCALING_FACTOR); // truncating Z after multiplication 
+        cout << endl << "Truncated Matrix Z (X,Y mapped, multiplied and then truncated) " << endl;
+        cout << endl << Z_t  << endl;
+        
+        MatrixXd Z_f = Uint64ToFloat(Z_t);              // converting Z back to floats
+        cout << endl << "Matrix Z mapped back to floats" << endl;
+        cout << endl << Z_f << endl << endl;
+
+    }
+    else if (selection == 3)
+    {
+        // Secret Sharing functionality         
+        MatrixXd X = MatrixXd::Random(2,2);             // Random Matrix X        
+        cout << endl << "Matrix X: " << endl;
+        cout << endl << X << endl;
+
+        MatrixXi64 X_i = FloatToUint64(X);              // converting X to integer ring 
+
+        MatrixXi64 shares[2];                           
+        Share(X_i,shares);                              // creating shares of X 
+
+        MatrixXi64 X_i0 = shares[0];                    // zeroth share of X
+        cout << endl << "Matrix X_0: " << endl;
+        cout << endl << X_i0 << endl;
+
+        MatrixXi64 X_i1 = shares[1];                    // first share of X 
+        cout << endl << "Matrix X_1: " << endl;
+        cout << endl << X_i1 << endl;
+
+        MatrixXi64 X_r = Rec(X_i0, X_i1);               // reconstructiong the shares 
+        MatrixXd X_f = Uint64ToFloat(X_r);              // converting back to floats 
+        cout << endl << "Matrix X_f: " << endl;
+        cout << endl << X_f << endl;
+
+    }
+    else if (selection == 4)
+    {
+
+        MatrixXd X = MatrixXd::Random(3,3);     // Random Matrix X
+        cout << endl << "X: " << endl;
+        cout << X << endl;
+
+        MatrixXd Y = MatrixXd::Random(3,3);     // Random Matrix Y
+        cout << endl << "Y: " << endl;
+        cout << Y << endl;
+
+        MatrixXd Z = X * Y;
+        cout << endl << "Z (floating point muliplication): " << endl;
+        cout << Z << endl;
 
 
-    // uint64_t Z_sha_r = Rec(Z_i0_t, Z_i1_t);
-    // // cout << endl << "Z truncated (shared setting): " << Z_sha_r << endl;
+        MatrixXi64 X_i = FloatToUint64(X);      // converting matrix X to integer 
+        // cout << endl << "Matrix X mapped : " << endl;
+        // cout << X_i << endl;
 
-    // double Z_sha_f = Uint64ToFloat(Z_sha_r);
-    // cout << "Z (shared setting): " << Z_sha_f << endl;
+        MatrixXi64 Y_i = FloatToUint64(Y);      // converting matrix Y to integer
+        // cout << endl << "Matrix Y mapped : " << endl;
+        // cout << Y_i << endl;
 
-    cout << endl << " Matrix Test " << endl;
-
-    MatrixXd Test1 = MatrixXd::Random(3,3);
-    cout << endl << Test1 << endl;
-
-    MatrixXi64 Test1_i = FloatToUint64(Test1);
-    cout << endl << Test1_i << endl;
-
-
-    MatrixXi64 shares1[2];
-    Share(Test1_i, shares1);
-    MatrixXi64 Test1_i0 = shares1[0];
-    cout << endl << Test1_i0 << endl;
-    MatrixXi64 Test1_i1 = shares1[1];
-    cout << endl << Test1_i1 << endl;
-
-    MatrixXi64 Test1_rec = Rec(Test1_i0, Test1_i1);
-    cout << endl << Test1_rec << endl;
+        // MatrixXi64 Z_i = X_i * Y_i;
+        // MatrixXi64 Z_i_t = Truncate(Z_i, SCALING_FACTOR);
+        // cout << endl << "Matrix Z (X * Y and then truncated): " << endl;
+        // cout << Z_i_t << endl;
 
 
+        cout << endl << "==== Creating shares of X and Y ====" << endl;
 
-    MatrixXd Test1_f = Uint64ToFloat(Test1_i);
-    cout << endl << Test1_f << endl;
+        // Creating shares of matrix X
+        MatrixXi64 sharesX[2];
+        Share(X_i, sharesX);
 
-    // MatrixXd Test2 = MatrixXd::Random(3,3);
-    // cout << endl << Test2 << endl;
+        MatrixXi64 X_i0 = sharesX[0];           // 0th share of X
+        // cout << endl << "Matrix X (0th share) : " << endl;
+        // cout << X_i0 << endl;
+        
+        MatrixXi64 X_i1 = sharesX[1];           // 1st share of X
+        // cout << endl << "Matrix X (1st share) : " << endl;
+        // cout << X_i1 << endl;
 
-    
+        // Creating shares of matrix Y
+        MatrixXi64 sharesY[2];
+        Share(Y_i, sharesY);
 
-    // MatrixXi64 Test2_uint = FloatToUint64(Test2);
-    // cout << endl << Test2_uint << endl;
+        MatrixXi64 Y_i0 = sharesY[0];           // 0th share of Y
+        // cout << endl << "Matrix Y (0th share) : " << endl;
+        // cout << Y_i0 << endl;
+        
+        MatrixXi64 Y_i1 = sharesY[1];           // 1st share of Y
+        // cout << endl << "Matrix Y (1st share) : " << endl;
+        // cout << Y_i1 << endl;
 
-    
+
+        cout << endl << "==== Triplet Generation (C = A * B) ====" << endl;
+
+        MatrixXi64 triplet_shares[6];
+        TripletGeneration(X.rows(), X.cols(), Y.rows(), Y.cols(), triplet_shares);
+
+        MatrixXi64 A_0, A_1, B_0, B_1, C_0, C_1;
+        A_0 = triplet_shares[0];
+        A_1 = triplet_shares[1];
+
+        B_0 = triplet_shares[2];
+        B_1 = triplet_shares[3];
+
+        C_0 = triplet_shares[4];
+        C_1 = triplet_shares[5];
+
+        // cout << endl << "A_0: " <<endl;
+        // cout << A_0 << endl; 
 
 
-    // MatrixXd Test2_f = Uint64ToFloat(Test2_uint);
-    // cout << endl << Test2_f << endl;
+        cout << endl << "==== Secure Mat Mult (Z = X * Y)====" << endl;
 
-    
+        // masking shares of X
+        MatrixXi64 E_0 = X_i0 - A_0;
+        MatrixXi64 E_1 = X_i1 - A_1;
+        MatrixXi64 E = Rec(E_0, E_1); // masked X
+
+        // masking shares of Y
+        MatrixXi64 F_0 = Y_i0 - B_0;
+        MatrixXi64 F_1 = Y_i1 - B_1;
+        MatrixXi64 F = Rec(F_0, F_1); // masked Y
+
+        // performing secure matrix multiplication for both party 0 and party 1
+
+        MatrixXi64 Z_smult0 = MatMult(0, X_i0, Y_i0, E, F, C_0);    // computing 0th share of Z = X * Y
+        MatrixXi64 Z_smult0_t = Truncate(Z_smult0, SCALING_FACTOR); // truncating Z_0 after mulitplication
+        MatrixXi64 Z_smult1 = MatMult(1, X_i1, Y_i1, E, F, C_1);    // computing 1st share of Z = X * Y
+        MatrixXi64 Z_smult1_t = Truncate(Z_smult1, SCALING_FACTOR);   // truncating Z_1 after mulitplication
+
+        MatrixXi64 Z_smult_t = Rec(Z_smult0_t, Z_smult1_t);         // reconstructing Z
+        // cout << endl << "Z_smult_i : " << endl;
+        // cout << Z_smult_t << endl;
+
+        MatrixXd Z_f = Uint64ToFloat(Z_smult_t);
+        cout << endl << "Z_f: " << endl;
+        cout << Z_f << endl;
+
+    }
 
     return 0;
 }
-
-
-
-// cout << "========= Single Test ========" << endl;
-    // MatrixXd t(1,1);
-    // t << 0.511210;
-    // cout << t << endl;
-
-    // MatrixXi64 t_uint = FloatToUint64(t);
-    // cout << t_uint << endl;
-
-    // MatrixXd t_int = Uint64ToFloat(t_uint);
-    // cout << t_int << endl;
