@@ -380,28 +380,72 @@ vector<int> GetBinaryVector(uint64_t a)
 
 int PrivateCompare(uint64_t a, uint64_t b)
 {   
+    uint64_t diff = (uint64_t) a - b;
+    cout << "diff : " << diff;
+    vector<int> diff_bits = GetBinaryVector(diff);
+    
+    cout << endl << "diff : ";
+    for (int i = 0; i < diff_bits.size(); i ++ )
+    {
+        cout << diff_bits[i];
+    }
+    
+    uint64_t boundary = 1LL << 63;
+    vector<int> boundary_bits = GetBinaryVector(boundary);
+
+    cout << endl << "bound: ";
+    for (int i = 0; i < boundary_bits.size(); i ++ )
+    {
+        cout << boundary_bits[i];
+    }
+    cout << endl;
+
+    uint64_t x = diff^boundary;
+    vector<int> xor_bits = GetBinaryVector(x);
+    cout << "xor  : ";
+    for (int i = 0; i < xor_bits.size(); i ++ )
+    {
+        cout << xor_bits[i];
+    }
+    cout << endl;
+
+    vector<int> res;
+    int H = 0;
+
+    for (int i = 0; i < 64; i++)
+    {
+        int temp = (boundary_bits[i] - diff_bits[i]) + 1 + H;
+        res.push_back(temp);
+        H = H + xor_bits[i];
+    }
+
+    int r = 0;
+
+    cout << "res  : ";
+    for (int i = 0; i < res.size(); i ++ )
+    {
+        cout << res[i];
+        if (res[i]==0)
+        {
+            r = 1;
+        }
+    }
+    cout << endl << endl << "res(diff > bound)  : " << r << endl;
+
+    return r;
+}
+
+int PrivateCompare1(uint64_t a, uint64_t b)
+{   
     vector<int> a_bits = GetBinaryVector(a);
-    cout << endl << "a: ";
-    for (int i = 0; i < a_bits.size(); i ++ )
-    {
-        cout << a_bits[i];
-    }
-    cout << endl;
-
     vector<int> b_bits = GetBinaryVector(b);
-    cout << "b: ";
-    for (int i = 0; i < b_bits.size(); i ++ )
-    {
-        cout << b_bits[i];
-    }
-    cout << endl;
 
-    uint64_t c = a^b;
-    vector<int> c_bits = GetBinaryVector(c);
-    cout << "c: ";
-    for (int i = 0; i < c_bits.size(); i ++ )
+    uint64_t x = a^b;
+    vector<int> xor_bits = GetBinaryVector(x);
+    cout << "xor  : ";
+    for (int i = 0; i < xor_bits.size(); i ++ )
     {
-        cout << c_bits[i];
+        cout << xor_bits[i];
     }
     cout << endl;
 
@@ -414,13 +458,13 @@ int PrivateCompare(uint64_t a, uint64_t b)
 
         int temp = (b_bits[i] - a_bits[i]) + 1 + H;
         res.push_back(temp);
-        H = H + c_bits[i];
+        H = H + xor_bits[i];
     
     }
 
     int r = 0;
 
-    cout << "r: ";
+    cout << "res  : ";
     for (int i = 0; i < res.size(); i ++ )
     {
         cout << res[i];
@@ -429,10 +473,10 @@ int PrivateCompare(uint64_t a, uint64_t b)
             r = 1;
         }
     }
-    cout << endl;
+
+    cout << endl << "res(a > b): " << r << endl;
 
     return r;
-
 }
 
 

@@ -225,7 +225,7 @@ int main()
     else if (selection == 5)
     {
         MatrixXd X (2, 2);                          // Forming Matrix X 
-        X << 10.55, -5.55, 5.66, -5.77;
+        X << 10.55, 5.55, -5.66, 5.77;
         cout << endl << "Matrix X: " <<endl;
         cout << X << endl;
 
@@ -236,30 +236,76 @@ int main()
         uint64_t a = X_i(0,0);                      // setting the value of a
         uint64_t b = X_i(0,1);                      // setting the value of b
 
-        int r0 = PrivateCompare(a, b);
+        uint64_t c = X_i(1,0);                      // setting the value of a
+        uint64_t d = X_i(1,1);                      // setting the value of b
+
+        // Paper Private Compare
+
+        cout << endl << endl << "====According to Paper====" << endl;
+        cout << endl << "Comparison of a = X(0,0) and b = X(0,1)" << endl << endl;
+
+
+        string a_s = bitset<64>(a).to_string(); // getting the binary representation string
+        cout << "a    : " << a_s << endl;
+
+        string b_s = bitset<64>(b).to_string(); // getting the binary representation string
+        cout << "b    : " << b_s << endl;
+        int r0 = PrivateCompare1(a, b);
 
         if (r0==0)
         {
-            cout << endl << "a>b: False" << endl;
+            cout << endl << "a >b: False" << endl;
         }
         else if (r0==1)
         {
-            cout << endl << "a>b: True" << endl;
+            cout << endl << "a > b: True" << endl;
         }
 
-        uint64_t d = X_i(1,0);                      // setting the value of a
-        uint64_t e = X_i(1,1);                      // setting the value of b
+        cout << endl << "Comparison of c = X(1,0) and d = X(1,1)" << endl << endl;
 
-        int r1 = PrivateCompare(d, e);
+        string c_s = bitset<64>(c).to_string(); // getting the binary representation string
+        cout << "c    : " << c_s << endl;
+
+        string d_s = bitset<64>(d).to_string(); // getting the binary representation string
+        cout << "d    : " << d_s << endl;
+        int r1 = PrivateCompare1(c, d);
 
         if (r1==0)
         {
-            cout << endl << "a>b: False" << endl;
+            cout << endl << "c > d: False" << endl;
         }
         else if (r1==1)
         {
-            cout << endl << "a>b: True" << endl;
+            cout << endl << "c > d: True" << endl;
         }
+
+
+        // According to author
+        cout << endl << endl << "====According to Author====" << endl;
+        cout << endl << "Comparison of a = X(0,0) and b = X(0,1)" << endl << endl;
+        int r3 = PrivateCompare(a, b);
+
+        if (r3==0)
+        {
+            cout << endl << "a > b: True" << endl;
+        }
+        else if (r3==1)
+        {
+            cout << endl << "a > b: False" << endl;
+        }
+
+        cout << endl << "Comparison of c = X(1,0) and d = X(1,1)" << endl << endl;  
+        int r4 = PrivateCompare(c, d);
+
+        if (r4==0)
+        {
+            cout << endl << "c > d: True" << endl;
+        }
+        else if (r4==1)
+        {
+            cout << endl << "c > d: False" << endl;
+        }
+
     }
     else
     {
