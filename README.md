@@ -6,9 +6,10 @@
 ### Execution 
 ```
 git clone https://github.com/kubershahi/ashoka-capstone.git
-make nn         // for Neural Network
-make bb         // for SecureNN building blocks
+make nn         
+make bb         
 ```
+'make nn' is for the Neural Network and 'make bb' is for the bulding blocks
 
 ### Scratch Neural Network Implementation:
 * Neural Network with ReLU and Softmax 
