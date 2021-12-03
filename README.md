@@ -1,4 +1,4 @@
-# Implementation Details for Capstone Project:
+## Implementation Details for Capstone Project:
 
 ### Dependencies
 * Eigen
@@ -6,7 +6,7 @@
 ### Execution 
 ```
 git clone https://github.com/kubershahi/ashoka-capstone.git
-make nn         // for Neural network
+make nn         // for Neural Network
 make bb         // for SecureNN building blocks
 ```
 
@@ -20,3 +20,5 @@ make bb         // for SecureNN building blocks
 * Secret Sharing
 * Matrix Multiplication (Beaver's Triplet)
 * Private Compare 
+
+SecureNN Paper: https://eprint.iacr.org/2018/442.pdf
