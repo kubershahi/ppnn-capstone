@@ -11,7 +11,7 @@
 */
 
 #define SCALING_FACTOR 1048576
-#define PRIME_NUMBER 67
+#define P 67
 
 #include <Eigen/Dense>
 

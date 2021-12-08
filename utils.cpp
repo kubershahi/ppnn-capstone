@@ -8,8 +8,8 @@
 
 #include <Eigen/Dense>
 
-smallType additionModPrime[PRIME_NUMBER][PRIME_NUMBER];
-smallType multiplicationModPrime[PRIME_NUMBER][PRIME_NUMBER];
+smallType additionModPrime[P][P];
+smallType multiplicationModPrime[P][P];
 
 using namespace std;
 using namespace Eigen;
@@ -265,24 +265,24 @@ void ShareZp(vector<int> x, vector<int> shares[])
     vector<int> x_1;
 
     for (int i = 0; i < x.size(); i++){
-        int temp = rand() % 67;
-        int temp1 = (x[i] - temp) + 67;
+        int temp = rand() % P;
+        int temp1 = (x[i] - temp) + P;
         x_0.push_back(temp);
         x_1.push_back(temp1);
 
     }
 
-    cout << endl << "x0: ";
-    for(int j = 0; j < x.size(); j++)
-    {
-        cout << x_0[j] << ",";
-    }
+    // cout << endl << "x0: ";
+    // for(int j = 0; j < x.size(); j++)
+    // {
+    //     cout << x_0[j] << ",";
+    // }
 
-    cout << endl << "x1: ";
-    for(int j = 0; j < x.size(); j++)
-    {
-        cout << x_1[j] << ",";
-    }
+    // cout << endl << "x1: ";
+    // for(int j = 0; j < x.size(); j++)
+    // {
+    //     cout << x_1[j] << ",";
+    // }
 
     shares[0] = x_0;
     shares[1] = x_1;
@@ -300,6 +300,19 @@ uint64_t Rec(uint64_t X, uint64_t Y)
 MatrixXi64 Rec(MatrixXi64 X, MatrixXi64 Y)
 {
 	return X + Y;
+}
+
+vector<int> RecZp(vector<int> c0, vector<int> c1)
+{
+    vector<int> c;
+
+    for (int i = 0; i < c0.size(); i++)
+    {
+        int temp = (c0[i] + c1[i]) % P;
+        c.push_back(temp);
+    }
+
+    return c;
 }
 
 
@@ -415,7 +428,7 @@ vector<int> GetBinaryVector(uint64_t a)
 }
 
 
-// function that does comparison of two number in unshared setting
+// function that compares two integers in the ring - unshared setting
 int unsharedPrivateCompare(uint64_t x, uint64_t r)
 {   
     vector<int> x_bits = GetBinaryVector(x);
@@ -472,92 +485,146 @@ int unsharedPrivateCompare(uint64_t x, uint64_t r)
 }
 
 
+// function that compares two numbers in the ring - shared setting
 int PrivateCompare(uint64_t x, uint64_t r)
 {   
-    uint64_t diff = (uint64_t) x - r;
-    cout << "diff : " << diff;
-    vector<int> diff_bits = GetBinaryVector(diff);
-
-    cout << endl << "diff : ";
-    for (int i = 0; i < diff_bits.size(); i ++ )
+    // converting to binary number
+    vector<int> x_bits = GetBinaryVector(x); // getting binary vector of x
+    cout << endl << "x  : ";
+    for (int i = 0; i < x_bits.size(); i ++ )
     {
-        cout << diff_bits[i];
+        cout << x_bits[i];
     }
-    
-    uint64_t boundary = 1LL << 63;
-    vector<int> boundary_bits = GetBinaryVector(boundary);
 
-    cout << endl << "bound: ";
-    for (int i = 0; i < boundary_bits.size(); i ++ )
+    vector<int> r_bits = GetBinaryVector(r); // getting binary vector of r
+    cout << endl << "r  : ";
+    for (int i = 0; i < r_bits.size(); i ++ )
     {
-        cout << boundary_bits[i];
+        cout << r_bits[i];
     }
-    cout << endl;
 
-    // unshared setting
-
-    // uint64_t xr  = diff^boundary;
-    // vector<int> xor_bits = GetBinaryVector(xr);
-    // cout << "xor  : ";
-    // for (int i = 0; i < xor_bits.size(); i ++ )
-    // {
-    //     cout << xor_bits[i];
-    // }
-    // cout << endl;
-
-    // vector<int> res_bits;
-    // int H = 0;
-
-    // for (int i = 0; i < 64; i++)
-    // {
-    //     int temp = (boundary_bits[i] - diff_bits[i]) + 1 + H;
-    //     res_bits.push_back(temp);
-    //     H = H + xor_bits[i];
-    // }
-
-    // int res = 0;
-
-    // cout << "res_b: ";
-    // for (int i = 0; i < res_bits.size(); i ++ )
-    // {
-    //     cout << res_bits[i];
-    //     if (res_bits[i]==0)
-    //     {
-    //         res = 1;
-    //     }
-    // }
-    // cout << endl << endl << "res(diff > bound)  : " << res << endl;
-
-
-    // shared setting
-
+    // creating boolean shares of each bit of s
     vector<int> shares[2];
-    ShareZp(diff_bits, shares);
+    ShareZp(x_bits, shares);        // getting boolean shares of each bit in x
 
     vector<int> x_0 = shares[0];
     vector<int> x_1 = shares[1];
 
+    cout << endl << endl << "== Boolean shares of x ==" << endl;
 
-
-    cout << endl << "x0: ";
-    for(int j = 0; j < diff_bits.size(); j++)
+    cout << endl << "P0 gets" << endl << "x0: ";
+    for(int j = 0; j < x_0.size(); j++)
     {
         cout << x_0[j] << ",";
     }
 
-    cout << endl << "x1: ";
-    for(int j = 0; j < diff_bits.size(); j++)
+    cout << endl << endl << "P1 gets" << endl <<  "x1: ";
+    for(int j = 0; j < x_1.size(); j++)
     {
         cout << x_1[j] << ",";
     }
 
+    // computation of P0
+
+    cout << endl << endl << "== Computation of P0 ==" << endl;
+    vector<int> w0_sum_bits;
+
+    int w0 = 0; 
+    w0_sum_bits.push_back(w0);
+    
+    // computing w0(xor) for P0 according to the paper
+    
+    // cout << endl << "w0: ";
+    for (int i = 0; i < 64; i++)
+    {
+        int w0_temp = (x_0[i] - 2 * r_bits[i] * x_0[i]) % P;
+        if (w0_temp < 0){w0_temp = w0_temp + P;}
+        // cout << w0_temp << ",";
+        w0 = w0 + w0_temp;
+        w0_sum_bits.push_back(w0);
+    }
+
+    // cout << endl << "w0_sum: ";
+    // for (int i =0; i <65; i++)
+    // {
+    //     cout << w0_sum_bits[i] << "," ;
+    // } 
+
+    // computing c0 for P0 according to the paper
+    vector<int> c0_bits;
+
+    cout << endl << "c0: ";
+    for (int i = 0; i < 64; i++)
+    {
+        int c0_temp = ( - x_0[i] + w0_sum_bits[i]) % P;
+        if (c0_temp < 0){c0_temp = c0_temp + P;}
+        cout << c0_temp << ",";
+        c0_bits.push_back(c0_temp);
+    }
+
+
+    // computation of P1
+
+    cout << endl << endl << "== Computation of P1 ==" << endl;
+    vector<int> w1_sum_bits;
+
+    int w1 = 0;
+    w1_sum_bits.push_back(w1); // w = 0 defined above
+    
+    // computing w1(xor) for P1 according to the paper
+
+    // cout << endl << "w1: ";
+    for (int i = 0; i < 64; i++)
+    {
+        int w1_temp = (x_1[i] + r_bits[i] - 2 * r_bits[i] * x_1[i]) % P;
+        // cout << w1_temp << ",";
+        if (w1_temp < 0){w1_temp = w1_temp + P;}
+        // cout << w1_temp << ",";
+        w1 = w1 + w1_temp;
+        w1_sum_bits.push_back(w1);
+    }
+
+    // cout << endl << "w1_sum: ";
+    // for (int i =0; i <65; i++)
+    // {
+    //     cout << w1_sum_bits[i] << "," ;
+    // } 
+
+    // computing c1 for P1 according to the paper
+    vector<int> c1_bits;
+
+    cout << endl << "c1 :";
+    for (int i = 0; i < 64; i++)
+    {
+        int c1_temp = (r_bits[i] - x_1[i] + 1 + w1_sum_bits[i]) % P;
+        if (c1_temp < 0){c1_temp = c1_temp + P;}
+        cout << c1_temp << ",";
+        c1_bits.push_back(c1_temp);
+    }
+
+    cout << endl << endl << "== Computation of P2 ==" << endl;
+
+    vector<int> c_bits = RecZp(c0_bits, c1_bits);
 
     int res = 0;
+
+    cout << endl << "c : ";
+    for (int i = 0; i < 64; i++)
+    {
+        cout << c_bits[i] << "," ;
+        if (c_bits[i]==0)
+        {
+            res = 1;
+        }
+    } 
+
+    cout << endl << "res(x > r): " << res << endl;
+
     return res;
 }
 
 
-
+// function that compares two numbers in the ring by their difference with (2^63) - experimentation
 int PrivateCompareDiff(uint64_t x, uint64_t r)
 {   
     uint64_t diff = (uint64_t) x - r;

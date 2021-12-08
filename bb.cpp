@@ -238,7 +238,7 @@ int main()
         cout << endl << "x: " << x_i << endl;
         cout << "r: " << r_i << endl;
 
-        cout << endl << "== Comparison ==" << endl;
+        cout << endl << "== Comparison (x > r) ==" << endl;
 
         // string x_s = bitset<64>(x_i).to_string(); // getting the binary representation string
         // cout << "x    : " << x_s << endl;
@@ -278,11 +278,13 @@ int main()
 
         double x, r;
 
-        cout << endl << "Enter a number (x): " << endl;
+        cout << endl << "Enter a number (x): ";
         cin >> x;
 
-        cout << endl << "Enter another (r): " << endl;
+        cout << "Enter another number (r): ";
         cin >> r;
+
+        cout << endl << "== After being mapped to Z_L ring ==" << endl;
 
         uint64_t x_i = FloatToUint64(x);
         uint64_t r_i = FloatToUint64(r);
@@ -290,18 +292,18 @@ int main()
         cout << endl << "x: " << x_i << endl;
         cout << "r: " << r_i << endl;
 
+        cout << endl << "== Comparison (x > r) ==" << endl;
+
         int res = PrivateCompare(x_i,r_i);
 
-        cout << "res: " << res << endl; 
-
-        // if (res==0)
-        // {
-        //     cout << endl << "x > r: True" << endl;
-        // }
-        // else if (res==1)
-        // {
-        //     cout << endl << "x > r: False" << endl;
-        // }
+        if (res==0)
+        {
+            cout << endl << "x > r: False" << endl;
+        }
+        else if (res==1)
+        {
+            cout << endl << "x > r: True" << endl;
+        }
 
     }
     else if (selection==7) // Random Testing code
