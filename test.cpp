@@ -103,22 +103,22 @@ int main()
     // cout << endl;
 
 
-    uint64_t a = -45;
-    cout << "a: " << a << endl;
-    uint64_t b = 234;
-    cout << "b: " << b <<endl;
-    uint64_t c = a^b;
-    cout << endl;
+    // uint64_t a = -45;
+    // cout << "a: " << a << endl;
+    // uint64_t b = 234;
+    // cout << "b: " << b <<endl;
+    // uint64_t c = a^b;
+    // cout << endl;
 
 
-    string a_s = bitset<64>(a).to_string();     // getting the binary representation string
-    cout << "a: " << a_s << endl;
+    // string a_s = bitset<64>(a).to_string();     // getting the binary representation string
+    // cout << "a: " << a_s << endl;
 
-    vector<int> a_bits;                     
-    for (int i = 0; i < a_s.length(); i ++ )    // converting the binary string to int array
-    {
-        a_bits.push_back((int(a_s[i]) - 48));
-    }
+    // vector<int> a_bits;                     
+    // for (int i = 0; i < a_s.length(); i ++ )    // converting the binary string to int array
+    // {
+    //     a_bits.push_back((int(a_s[i]) - 48));
+    // }
 
     // cout << "a: ";
     // for (int i = 0; i < a_bits.size(); i ++ )
@@ -128,56 +128,71 @@ int main()
     // cout << endl;
 
 
-    string b_s = bitset<64>(b).to_string();
-    cout << "b: " << b_s << endl;
+    // string b_s = bitset<64>(b).to_string();
+    // cout << "b: " << b_s << endl;
 
-    vector<int> b_bits;                     
-    for (int i = 0; i < b_s.length(); i ++ )    // converting the binary string to int array
-    {
-        b_bits.push_back((int(b_s[i]) - 48));
-    }
+    // vector<int> b_bits;                     
+    // for (int i = 0; i < b_s.length(); i ++ )    // converting the binary string to int array
+    // {
+    //     b_bits.push_back((int(b_s[i]) - 48));
+    // }
 
 
-    string c_s = bitset<64>(c).to_string();
-    cout << "c: " << c_s << endl;
+    // string c_s = bitset<64>(c).to_string();
+    // cout << "c: " << c_s << endl;
 
-    vector<int> c_bits;                     
-    for (int i = 0; i < c_s.length(); i ++ )    // converting the binary string to int array
-    {
-        c_bits.push_back((int(c_s[i]) - 48));
-    }
+    // vector<int> c_bits;                     
+    // for (int i = 0; i < c_s.length(); i ++ )    // converting the binary string to int array
+    // {
+    //     c_bits.push_back((int(c_s[i]) - 48));
+    // }
 
-    vector<int> res;
-    int H = 0;
+    // vector<int> res;
+    // int H = 0;
 
-    for (int i = 0; i < 64; i++)
-    {
+    // for (int i = 0; i < 64; i++)
+    // {
 
-        int temp = (b_bits[i] - a_bits[i]) + 1 + H;
-        res.push_back(temp);
-        H = H + c_bits[i];
+    //     int temp = (b_bits[i] - a_bits[i]) + 1 + H;
+    //     res.push_back(temp);
+    //     H = H + c_bits[i];
     
-    }
+    // }
 
-    int r = 0;
+    // int r = 0;
 
-    cout << "r: ";
-    for (int i = 0; i < res.size(); i ++ )
-    {
-        cout << res[i];
-        if (res[i]==0)
-        {
-            r = 1;
-        }
-    }
-    cout << endl;
+    // cout << "r: ";
+    // for (int i = 0; i < res.size(); i ++ )
+    // {
+    //     cout << res[i];
+    //     if (res[i]==0)
+    //     {
+    //         r = 1;
+    //     }
+    // }
+    // cout << endl;
 
-    if (r==0){
-        cout << endl << "a>b: False" << endl;
+    // if (r==0){
+    //     cout << endl << "a>b: False" << endl;
+    // }
+    // else if (r==1){
+    //     cout << endl << "a>b: True" << endl;
+    // }
+
+    uint64_t x = 10.55
+    
+
+
+    vector<uint64_t> x_0;
+    vector<uint64_t> x_1;
+    for (int i = 0; i < 64; i++){
+        uint64_t temp = rand() % 67;
+        uint64_t temp1 = 
+        x_0.push_back(temp);
+        
     }
-    else if (r==1){
-        cout << endl << "a>b: True" << endl;
-    }
+    
+    cout << r << endl;
 
     return 0;
 }

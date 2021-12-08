@@ -24,6 +24,8 @@ MatrixXd Uint64ToFloat(MatrixXi64 X);
 void Share(uint64_t X, uint64_t shares[]);
 void Share(MatrixXi64 X, MatrixXi64 shares[]);
 
+void ShareZp(vector<int> x , vector<int> shares[]);
+
 uint64_t Rec(uint64_t X, uint64_t Y);
 MatrixXi64 Rec(MatrixXi64 X, MatrixXi64 Y);
 
@@ -34,7 +36,9 @@ uint64_t Truncate(uint64_t x, int factor);
 MatrixXi64 Truncate(MatrixXi64 X, int factor);
 
 vector<int> GetBinaryVector(uint64_t a);
-int PrivateCompare(uint64_t a, uint64_t b); // according to the author
-int PrivateCompare1(uint64_t a, uint64_t b); // according to the paper
+int unsharedPrivateCompare(uint64_t a, uint64_t b); // unshared comparison of two numbers in the ring
+int PrivateCompare(uint64_t x, uint64_t r); // shared comparison of two numbers in the ring
+
+int PrivateCompareDiff(uint64_t a, uint64_t b); // comparison based on diff (experimentation)
 
 #endif

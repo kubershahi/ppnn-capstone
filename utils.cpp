@@ -14,6 +14,7 @@ smallType multiplicationModPrime[PRIME_NUMBER][PRIME_NUMBER];
 using namespace std;
 using namespace Eigen;
 
+
 // function that changes the target labels into one-hot encoding format
 MatrixXd OnehotEncoding(MatrixXd X)
 {
@@ -56,6 +57,7 @@ MatrixXd Relu(MatrixXd S_1, MatrixXd &drelu_1)
     return res.cwiseAbs();  // returning the absolute value          
 }
 
+
 //function that computes the Softmax activation function
 MatrixXd Softmax(MatrixXd S2)
 {
@@ -91,6 +93,7 @@ double ComputeLoss(MatrixXd Y, MatrixXd Y_hat)
     return -(Y_Y_hat_mult.sum());   // returning the sum of final matrix 
 
 }
+
 
 // function that computes the number of correct predicted outputs
 double ComputeCount(MatrixXd Y, MatrixXd Y_hat)
@@ -255,6 +258,37 @@ void Share(MatrixXi64 X, MatrixXi64 shares[])
 }
 
 
+// function that creates boolean shares of a number in Z_p (p=67)
+void ShareZp(vector<int> x, vector<int> shares[])
+{
+    vector<int> x_0;
+    vector<int> x_1;
+
+    for (int i = 0; i < x.size(); i++){
+        int temp = rand() % 67;
+        int temp1 = (x[i] - temp) + 67;
+        x_0.push_back(temp);
+        x_1.push_back(temp1);
+
+    }
+
+    cout << endl << "x0: ";
+    for(int j = 0; j < x.size(); j++)
+    {
+        cout << x_0[j] << ",";
+    }
+
+    cout << endl << "x1: ";
+    for(int j = 0; j < x.size(); j++)
+    {
+        cout << x_1[j] << ",";
+    }
+
+    shares[0] = x_0;
+    shares[1] = x_1;
+}
+
+
 // function that reconstructs the share of an integer
 uint64_t Rec(uint64_t X, uint64_t Y)
 {
@@ -292,7 +326,6 @@ uint64_t Truncate(uint64_t x, int factor)
 // function that truncates integer values in a given matrix
 MatrixXi64 Truncate(MatrixXi64 X, int factor)
 {
-
     MatrixXi64 res(X.rows(), X.cols());
     for (int i = 0; i < X.rows(); i++)
     {
@@ -346,6 +379,7 @@ void TripletGeneration( int X_row , int X_col, int Y_row , int Y_col, MatrixXi64
     triplet_shares[5] = shares[1];
 }
 
+
 // function that does the Beaver Triplet based secure multiplication
 MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi64 F, MatrixXi64 C_s)
 { 
@@ -364,6 +398,8 @@ MatrixXi64 MatMult(int i, MatrixXi64 X_s, MatrixXi64 Y_s, MatrixXi64 E, MatrixXi
 	return prod_s;
 }
 
+
+// function that gets the binary vector of a 64-bit integer number
 vector<int> GetBinaryVector(uint64_t a)
 {
     string a_s = bitset<64>(a).to_string(); // getting the binary representation string
@@ -378,10 +414,154 @@ vector<int> GetBinaryVector(uint64_t a)
     return a_bits;
 }
 
-int PrivateCompare(uint64_t a, uint64_t b)
+
+// function that does comparison of two number in unshared setting
+int unsharedPrivateCompare(uint64_t x, uint64_t r)
 {   
-    uint64_t diff = (uint64_t) a - b;
+    vector<int> x_bits = GetBinaryVector(x);
+    cout << endl << "x  : ";
+    for (int i = 0; i < x_bits.size(); i ++ )
+    {
+        cout << x_bits[i];
+    }
+
+    vector<int> r_bits = GetBinaryVector(r);
+    cout << endl << "r  : ";
+    for (int i = 0; i < r_bits.size(); i ++ )
+    {
+        cout << r_bits[i];
+    }
+
+    uint64_t z = x^r;
+    vector<int> xor_bits = GetBinaryVector(z);
+    cout << endl << "xor: ";
+    for (int i = 0; i < xor_bits.size(); i ++ )
+    {
+        cout << xor_bits[i];
+    }
+    cout << endl;
+
+    vector<int> res_bits;
+
+    int H = 0;
+
+    for (int i = 0; i < 64; i++)
+    {
+
+        int temp = (r_bits[i] - x_bits[i]) + 1 + H;
+        res_bits.push_back(temp);
+        H = H + xor_bits[i];
+    
+    }
+
+    int res = 0;
+
+    cout << endl << "res: ";
+    for (int i = 0; i < res_bits.size(); i ++ )
+    {
+        cout << res_bits[i];
+        if (res_bits[i]==0)
+        {
+            res = 1;
+        }
+    }
+
+    cout << endl << "res(x > r): " << res << endl;
+
+    return res;
+}
+
+
+int PrivateCompare(uint64_t x, uint64_t r)
+{   
+    uint64_t diff = (uint64_t) x - r;
     cout << "diff : " << diff;
+    vector<int> diff_bits = GetBinaryVector(diff);
+
+    cout << endl << "diff : ";
+    for (int i = 0; i < diff_bits.size(); i ++ )
+    {
+        cout << diff_bits[i];
+    }
+    
+    uint64_t boundary = 1LL << 63;
+    vector<int> boundary_bits = GetBinaryVector(boundary);
+
+    cout << endl << "bound: ";
+    for (int i = 0; i < boundary_bits.size(); i ++ )
+    {
+        cout << boundary_bits[i];
+    }
+    cout << endl;
+
+    // unshared setting
+
+    // uint64_t xr  = diff^boundary;
+    // vector<int> xor_bits = GetBinaryVector(xr);
+    // cout << "xor  : ";
+    // for (int i = 0; i < xor_bits.size(); i ++ )
+    // {
+    //     cout << xor_bits[i];
+    // }
+    // cout << endl;
+
+    // vector<int> res_bits;
+    // int H = 0;
+
+    // for (int i = 0; i < 64; i++)
+    // {
+    //     int temp = (boundary_bits[i] - diff_bits[i]) + 1 + H;
+    //     res_bits.push_back(temp);
+    //     H = H + xor_bits[i];
+    // }
+
+    // int res = 0;
+
+    // cout << "res_b: ";
+    // for (int i = 0; i < res_bits.size(); i ++ )
+    // {
+    //     cout << res_bits[i];
+    //     if (res_bits[i]==0)
+    //     {
+    //         res = 1;
+    //     }
+    // }
+    // cout << endl << endl << "res(diff > bound)  : " << res << endl;
+
+
+    // shared setting
+
+    vector<int> shares[2];
+    ShareZp(diff_bits, shares);
+
+    vector<int> x_0 = shares[0];
+    vector<int> x_1 = shares[1];
+
+
+
+    cout << endl << "x0: ";
+    for(int j = 0; j < diff_bits.size(); j++)
+    {
+        cout << x_0[j] << ",";
+    }
+
+    cout << endl << "x1: ";
+    for(int j = 0; j < diff_bits.size(); j++)
+    {
+        cout << x_1[j] << ",";
+    }
+
+
+    int res = 0;
+    return res;
+}
+
+
+
+int PrivateCompareDiff(uint64_t x, uint64_t r)
+{   
+    uint64_t diff = (uint64_t) x - r;
+    cout << endl << "diff : " << diff;
     vector<int> diff_bits = GetBinaryVector(diff);
     
     cout << endl << "diff : ";
@@ -400,8 +580,8 @@ int PrivateCompare(uint64_t a, uint64_t b)
     }
     cout << endl;
 
-    uint64_t x = diff^boundary;
-    vector<int> xor_bits = GetBinaryVector(x);
+    uint64_t z = diff^boundary;
+    vector<int> xor_bits = GetBinaryVector(z);
     cout << "xor  : ";
     for (int i = 0; i < xor_bits.size(); i ++ )
     {
@@ -409,74 +589,28 @@ int PrivateCompare(uint64_t a, uint64_t b)
     }
     cout << endl;
 
-    vector<int> res;
+    vector<int> res_bits;
     int H = 0;
 
     for (int i = 0; i < 64; i++)
     {
         int temp = (boundary_bits[i] - diff_bits[i]) + 1 + H;
-        res.push_back(temp);
+        res_bits.push_back(temp);
         H = H + xor_bits[i];
     }
 
-    int r = 0;
+    int res = 0;
 
     cout << "res  : ";
-    for (int i = 0; i < res.size(); i ++ )
+    for (int i = 0; i < res_bits.size(); i ++ )
     {
-        cout << res[i];
-        if (res[i]==0)
+        cout << res_bits[i];
+        if (res_bits[i]==0)
         {
-            r = 1;
+            res = 1;
         }
     }
-    cout << endl << endl << "res(diff > bound)  : " << r << endl;
+    cout << endl << endl << "res(diff > bound)  : " << res << endl;
 
-    return r;
+    return res;
 }
-
-int PrivateCompare1(uint64_t a, uint64_t b)
-{   
-    vector<int> a_bits = GetBinaryVector(a);
-    vector<int> b_bits = GetBinaryVector(b);
-
-    uint64_t x = a^b;
-    vector<int> xor_bits = GetBinaryVector(x);
-    cout << "xor  : ";
-    for (int i = 0; i < xor_bits.size(); i ++ )
-    {
-        cout << xor_bits[i];
-    }
-    cout << endl;
-
-    vector<int> res;
-
-    int H = 0;
-
-    for (int i = 0; i < 64; i++)
-    {
-
-        int temp = (b_bits[i] - a_bits[i]) + 1 + H;
-        res.push_back(temp);
-        H = H + xor_bits[i];
-    
-    }
-
-    int r = 0;
-
-    cout << "res  : ";
-    for (int i = 0; i < res.size(); i ++ )
-    {
-        cout << res[i];
-        if (res[i]==0)
-        {
-            r = 1;
-        }
-    }
-
-    cout << endl << "res(a > b): " << r << endl;
-
-    return r;
-}
-
-

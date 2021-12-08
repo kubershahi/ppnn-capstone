@@ -29,7 +29,8 @@ int main()
     cout << "\t [2] Truncation Functionality: " << endl;
     cout << "\t [3] Secret Sharing functionality: " << endl;
     cout << "\t [4] Secure Matrix Multiplication functionality: " << endl;
-    cout << "\t [5] Private Compare functionality: " << endl;
+    cout << "\t [5] Private Compare functionality (Unshared Setting): " << endl;
+    cout << "\t [6] Private Compare functionality (Shared Setting): " << endl;
 
     int selection = 0;
     cout << endl << "Enter selection: ";
@@ -38,9 +39,8 @@ int main()
     IOFormat CleanFmt(4, 0, ", ", "\n", "[", "]"); // formatting option while printing Eigen Matrices
     cout << fixed;
 
-    if (selection == 1)
+    if (selection == 1) // Mapping and Reverse Mapping functionality 
     {
-        // Mapping and Reverse Mapping functionality 
         MatrixXd X(2,2);
         X << 456.00, -0.987654, 5.66897, 0.88768;   // Random 2 x 2 Matrix
         cout << endl << "Matrix X: " << endl;
@@ -55,10 +55,8 @@ int main()
         cout << endl << X_f << endl << endl;
 
     }
-    else if (selection == 2)
-    {   
-        // Truncation Fucntionality 
-
+    else if (selection == 2) // Truncation Fucntionality 
+    {    
         MatrixXd X = MatrixXd::Random(2,2);         // Random Matrix X
         cout << endl << "Matrix X: " << endl;       
         cout << endl << X << endl;
@@ -92,9 +90,8 @@ int main()
         cout << endl << Z_f << endl << endl;
 
     }
-    else if (selection == 3)
-    {
-        // Secret Sharing functionality         
+    else if (selection == 3) // Secret Sharing functionality  
+    {       
         MatrixXd X = MatrixXd::Random(2,2);             // Random Matrix X        
         cout << endl << "Matrix X: " << endl;
         cout << endl << X << endl;
@@ -118,9 +115,8 @@ int main()
         cout << endl << X_f << endl;
 
     }
-    else if (selection == 4)
+    else if (selection == 4) // Secure Matrix Multiplication Functionality
     {
-
         MatrixXd X = MatrixXd::Random(3,3);     // Random Matrix X
         cout << endl << "X: " << endl;
         cout << X << endl;
@@ -222,90 +218,111 @@ int main()
         cout << Z_f << endl;
 
     }
-    else if (selection == 5)
+    else if (selection == 5) // Private Compare Functionality (Unshared Setting)
     {
-        MatrixXd X (2, 2);                          // Forming Matrix X 
-        X << 10.55, 5.55, -5.66, 5.77;
-        cout << endl << "Matrix X: " <<endl;
-        cout << X << endl;
+        cout << endl << "==== Private Compare Functionality (Unshared setting) ====" << endl;
 
-        MatrixXi64 X_i = FloatToUint64(X);          // converting matrix x to integer
-        cout << endl << "Matrix X mapped: " <<endl;
-        cout << X_i << endl;
+        double x, r;
 
-        uint64_t a = X_i(0,0);                      // setting the value of a
-        uint64_t b = X_i(0,1);                      // setting the value of b
+        cout << endl << "Enter a number (x): ";
+        cin >> x;
 
-        uint64_t c = X_i(1,0);                      // setting the value of a
-        uint64_t d = X_i(1,1);                      // setting the value of b
+        cout << "Enter another number (r): ";
+        cin >> r;
 
-        // Paper Private Compare
+        uint64_t x_i = FloatToUint64(x);
+        uint64_t r_i = FloatToUint64(r);
 
-        cout << endl << endl << "====According to Paper====" << endl;
-        cout << endl << "Comparison of a = X(0,0) and b = X(0,1)" << endl << endl;
+        cout << endl << "== After being mapped to Z_L ring ==" << endl;
 
+        cout << endl << "x: " << x_i << endl;
+        cout << "r: " << r_i << endl;
 
-        string a_s = bitset<64>(a).to_string(); // getting the binary representation string
-        cout << "a    : " << a_s << endl;
+        cout << endl << "== Comparison ==" << endl;
 
-        string b_s = bitset<64>(b).to_string(); // getting the binary representation string
-        cout << "b    : " << b_s << endl;
-        int r0 = PrivateCompare1(a, b);
+        // string x_s = bitset<64>(x_i).to_string(); // getting the binary representation string
+        // cout << "x    : " << x_s << endl;
 
-        if (r0==0)
+        // string r_s = bitset<64>(r_i).to_string(); // getting the binary representation string
+        // cout << "r    : " << r_s << endl;
+
+        int res = unsharedPrivateCompare(x_i, r_i);
+
+        if (res == 0)
         {
-            cout << endl << "a >b: False" << endl;
+            cout << endl << "x > r: False" << endl;
         }
-        else if (r0==1)
+        else if (res == 1)
         {
-            cout << endl << "a > b: True" << endl;
-        }
-
-        cout << endl << "Comparison of c = X(1,0) and d = X(1,1)" << endl << endl;
-
-        string c_s = bitset<64>(c).to_string(); // getting the binary representation string
-        cout << "c    : " << c_s << endl;
-
-        string d_s = bitset<64>(d).to_string(); // getting the binary representation string
-        cout << "d    : " << d_s << endl;
-        int r1 = PrivateCompare1(c, d);
-
-        if (r1==0)
-        {
-            cout << endl << "c > d: False" << endl;
-        }
-        else if (r1==1)
-        {
-            cout << endl << "c > d: True" << endl;
+            cout << endl << "x > r: True" << endl;
         }
 
 
-        // According to author
-        cout << endl << endl << "====According to Author====" << endl;
-        cout << endl << "Comparison of a = X(0,0) and b = X(0,1)" << endl << endl;
-        int r3 = PrivateCompare(a, b);
+        // // difference comparison (experimentation)
+        // cout << endl << "== Comparison by difference (x - r > 2^63) ==" << endl;
 
-        if (r3==0)
-        {
-            cout << endl << "a > b: True" << endl;
-        }
-        else if (r3==1)
-        {
-            cout << endl << "a > b: False" << endl;
-        }
+        // int res1 = PrivateCompareDiff(x_i, r_i);
 
-        cout << endl << "Comparison of c = X(1,0) and d = X(1,1)" << endl << endl;  
-        int r4 = PrivateCompare(c, d);
+        // if (res1==0)
+        // {
+        //     cout << endl << "x > r: True" << endl;
+        // }
+        // else if (res1==1)
+        // {
+        //     cout << endl << "x > r: False" << endl;
+        // }
+    }
+    else if (selection == 6) // Private Compare Functionality (Shared Setting)
+    {
+        cout << endl << "==== Private Compare Functionality (Shared Setting) ====" << endl;
 
-        if (r4==0)
-        {
-            cout << endl << "c > d: True" << endl;
-        }
-        else if (r4==1)
-        {
-            cout << endl << "c > d: False" << endl;
-        }
+        double x, r;
 
+        cout << endl << "Enter a number (x): " << endl;
+        cin >> x;
+
+        cout << endl << "Enter another (r): " << endl;
+        cin >> r;
+
+        uint64_t x_i = FloatToUint64(x);
+        uint64_t r_i = FloatToUint64(r);
+
+        cout << endl << "x: " << x_i << endl;
+        cout << "r: " << r_i << endl;
+
+        int res = PrivateCompare(x_i,r_i);
+
+        cout << "res: " << res << endl; 
+
+        // if (res==0)
+        // {
+        //     cout << endl << "x > r: True" << endl;
+        // }
+        // else if (res==1)
+        // {
+        //     cout << endl << "x > r: False" << endl;
+        // }
+
+    }
+    else if (selection==7) // Random Testing code
+    {
+        uint64_t t1 = (1LL << 63) + 10;
+        uint64_t t2 = (uint64_t) pow(2,64) - 19;
+
+        cout << endl << "t1: " << t1 << endl;
+        cout << endl << "t2: " << t2 << endl;
+        
+        uint64_t diff = t1 - t2;
+        cout << endl << "diff: " << diff << endl;
+
+        uint64_t b = 1LL << 63;
+        if (diff>b ){
+            cout << "True" << endl;
+        }
+        else 
+        {
+            cout << "False" << endl;
+        }
     }
     else
     {
