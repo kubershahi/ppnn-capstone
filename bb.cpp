@@ -222,7 +222,7 @@ int main()
     {
         cout << endl << "==== Private Compare Functionality (Unshared setting) ====" << endl;
 
-        double x, r;
+        uint64_t x, r;
 
         cout << endl << "Enter a number (x): ";
         cin >> x;
@@ -230,13 +230,13 @@ int main()
         cout << "Enter another number (r): ";
         cin >> r;
 
-        uint64_t x_i = FloatToUint64(x);
-        uint64_t r_i = FloatToUint64(r);
+        // uint64_t x_i = FloatToUint64(x);
+        // uint64_t r_i = FloatToUint64(r);
 
-        cout << endl << "== After being mapped to Z_L ring ==" << endl;
+        // cout << endl << "== After being mapped to Z_L ring ==" << endl;
 
-        cout << endl << "x: " << x_i << endl;
-        cout << "r: " << r_i << endl;
+        cout << endl << "x: " << x << endl;
+        cout << "r: " << r << endl;
 
         cout << endl << "== Comparison (x > r) ==" << endl;
 
@@ -246,7 +246,7 @@ int main()
         // string r_s = bitset<64>(r_i).to_string(); // getting the binary representation string
         // cout << "r    : " << r_s << endl;
 
-        int res = unsharedPrivateCompare(x_i, r_i);
+        int res = unsharedPrivateCompare(x, r);
 
         if (res == 0)
         {
@@ -276,25 +276,25 @@ int main()
     {
         cout << endl << "==== Private Compare Functionality (Shared Setting) ====" << endl;
 
-        double x, r;
+        uint64_t x, r;
 
-        cout << endl << "Enter a number (x): ";
+        cout << endl << "Enter a integer number (x): ";
         cin >> x;
 
-        cout << "Enter another number (r): ";
+        cout << "Enter another integer number (r): ";
         cin >> r;
 
-        cout << endl << "== After being mapped to Z_L ring ==" << endl;
+        // cout << endl << "== After being mapped to Z_L ring ==" << endl;
 
-        uint64_t x_i = FloatToUint64(x);
-        uint64_t r_i = FloatToUint64(r);
+        // uint64_t x_i = FloatToUint64(x);
+        // uint64_t r_i = FloatToUint64(r);
 
-        cout << endl << "x: " << x_i << endl;
-        cout << "r: " << r_i << endl;
+        cout << endl << "x: " << x << endl;
+        cout << "r: " << r << endl;
 
         cout << endl << "== Comparison (x > r) ==" << endl;
 
-        int res = PrivateCompare(x_i,r_i);
+        int res = PrivateCompare(x,r);
 
         if (res==0)
         {
