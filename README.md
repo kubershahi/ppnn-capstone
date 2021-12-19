@@ -20,7 +20,7 @@ make bb
 * Mapping and Reverse Mapping
 * Truncation
 * Secret Sharing
-* Matrix Multiplication (Beaver's Triplet)
+* Matrix Multiplication (Beaver's Multiplication Triples)
 * Private Compare 
 
 SecureNN Paper: https://eprint.iacr.org/2018/442.pdf
