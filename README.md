@@ -1,7 +1,7 @@
 ## Implementation Details for Capstone Project:
 
 ### Dependencies
-* Eigen
+* Eigen3
 
 ### Execution 
 ```
