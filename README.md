@@ -25,4 +25,4 @@ make bb
 
 SecureNN Paper: https://eprint.iacr.org/2018/442.pdf
 
-For final project report, see "Capstone_Report".
+For final project report, see "Capstone_Report.pdf".
