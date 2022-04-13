@@ -1,4 +1,4 @@
-## Implementation Details for Capstone Project (PPML):
+## Implementation Details for Capstone Project (PPNN):
 
 ### Dependencies
 * Eigen3
