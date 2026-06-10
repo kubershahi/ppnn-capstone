@@ -1,44 +1,44 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+# Build artifacts
+build/
 *.o
 *.obj
+*.slo
+*.lo
+*.d
 
-# Precompiled Headers
-*.gch
-*.pch
+# Executables
+nn
+bb
+test
+*.exe
+*.out
+*.app
 
-# Compiled Dynamic libraries
+# Libraries
 *.so
 *.dylib
 *.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
 *.lai
 *.la
 *.a
 *.lib
 
-# Executables
-*.exe
-*.out
-*.app
+# Precompiled headers
+*.gch
+*.pch
+
+# Fortran module files
+*.mod
+*.smod
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-#DS_Store
-*.DS_Store
+# macOS
+.DS_Store
 
-#Dataset
-datasets/mnist
+# Dataset (extracted files)
+datasets/mnist/
 
-#VS Code
-*.vscode
+# Editor
+.vscode/

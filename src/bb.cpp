@@ -23,7 +23,7 @@ int main()
 {
     
 
-    cout << endl << "Select Building Blocks (enter corresponsing digit): " << endl;
+    cout << endl << "Select Building Blocks (enter corresponding digit): " << endl;
     cout << endl;
     cout << "\t [1] Mapping and Reversing Mapping functionality: " << endl;
     cout << "\t [2] Truncation Functionality: " << endl;

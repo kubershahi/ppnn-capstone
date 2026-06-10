@@ -8,8 +8,8 @@
 
 #include <Eigen/Dense>
 
-smallType additionModPrime[P][P];
-smallType multiplicationModPrime[P][P];
+smallType additionModPrime[MOD_P][MOD_P];
+smallType multiplicationModPrime[MOD_P][MOD_P];
 
 using namespace std;
 using namespace Eigen;
@@ -265,8 +265,8 @@ void ShareZp(vector<int> x, vector<int> shares[])
     vector<int> x_1;
 
     for (int i = 0; i < x.size(); i++){
-        int temp = rand() % P;
-        int temp1 = (x[i] - temp) + P;
+        int temp = rand() % MOD_P;
+        int temp1 = (x[i] - temp) + MOD_P;
         x_0.push_back(temp);
         x_1.push_back(temp1);
 
@@ -308,7 +308,7 @@ vector<int> RecZp(vector<int> c0, vector<int> c1)
 
     for (int i = 0; i < c0.size(); i++)
     {
-        int temp = (c0[i] + c1[i]) % P;
+        int temp = (c0[i] + c1[i]) % MOD_P;
         c.push_back(temp);
     }
 
@@ -537,8 +537,8 @@ int PrivateCompare(uint64_t x, uint64_t r)
     // cout << endl << "w0: ";
     for (int i = 0; i < 64; i++)
     {
-        int w0_temp = (x_0[i] - 2 * r_bits[i] * x_0[i]) % P;
-        if (w0_temp < 0){w0_temp = w0_temp + P;}
+        int w0_temp = (x_0[i] - 2 * r_bits[i] * x_0[i]) % MOD_P;
+        if (w0_temp < 0){w0_temp = w0_temp + MOD_P;}
         // cout << w0_temp << ",";
         w0 = w0 + w0_temp;
         w0_sum_bits.push_back(w0);
@@ -556,8 +556,8 @@ int PrivateCompare(uint64_t x, uint64_t r)
     cout << endl << "c0: ";
     for (int i = 0; i < 64; i++)
     {
-        int c0_temp = ( - x_0[i] + w0_sum_bits[i]) % P;
-        if (c0_temp < 0){c0_temp = c0_temp + P;}
+        int c0_temp = ( - x_0[i] + w0_sum_bits[i]) % MOD_P;
+        if (c0_temp < 0){c0_temp = c0_temp + MOD_P;}
         cout << c0_temp << ",";
         c0_bits.push_back(c0_temp);
     }
@@ -576,9 +576,9 @@ int PrivateCompare(uint64_t x, uint64_t r)
     // cout << endl << "w1: ";
     for (int i = 0; i < 64; i++)
     {
-        int w1_temp = (x_1[i] + r_bits[i] - 2 * r_bits[i] * x_1[i]) % P;
+        int w1_temp = (x_1[i] + r_bits[i] - 2 * r_bits[i] * x_1[i]) % MOD_P;
         // cout << w1_temp << ",";
-        if (w1_temp < 0){w1_temp = w1_temp + P;}
+        if (w1_temp < 0){w1_temp = w1_temp + MOD_P;}
         // cout << w1_temp << ",";
         w1 = w1 + w1_temp;
         w1_sum_bits.push_back(w1);
@@ -596,8 +596,8 @@ int PrivateCompare(uint64_t x, uint64_t r)
     cout << endl << "c1 :";
     for (int i = 0; i < 64; i++)
     {
-        int c1_temp = (r_bits[i] - x_1[i] + 1 + w1_sum_bits[i]) % P;
-        if (c1_temp < 0){c1_temp = c1_temp + P;}
+        int c1_temp = (r_bits[i] - x_1[i] + 1 + w1_sum_bits[i]) % MOD_P;
+        if (c1_temp < 0){c1_temp = c1_temp + MOD_P;}
         cout << c1_temp << ",";
         c1_bits.push_back(c1_temp);
     }

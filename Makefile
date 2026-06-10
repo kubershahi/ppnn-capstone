@@ -1,33 +1,57 @@
+CXX = g++
+SRCDIR = src
+BUILDDIR = build
 
-#  -g    adds debugging information to the executable file
-#  -Wall turns on most, but not all, compiler warnings
+# Auto-detect Eigen on common install paths. Override with:
+#   make EIGEN_INCLUDE=-I/path/to/eigen3
+EIGEN_INCLUDE ?=
+ifeq ($(EIGEN_INCLUDE),)
+  EIGEN_PREFIX := $(shell brew --prefix eigen 2>/dev/null)
+  ifneq ($(EIGEN_PREFIX),)
+    EIGEN_INCLUDE := -I$(EIGEN_PREFIX)/include/eigen3
+  else ifneq ($(wildcard /usr/include/eigen3/Eigen/Dense),)
+    EIGEN_INCLUDE := -I/usr/include/eigen3
+  else ifneq ($(wildcard /opt/homebrew/include/eigen3/Eigen/Dense),)
+    EIGEN_INCLUDE := -I/opt/homebrew/include/eigen3
+  endif
+endif
 
-CC = g++
-# CFLAGS  = -g -Wall
+CXXFLAGS = -Isrc $(EIGEN_INCLUDE)
 
-bb: utils.o bb.o
-	$(CC) $(CFLAGS) utils.o bb.o -o bb
+ifeq ($(EIGEN_INCLUDE),)
+  $(warning Eigen not found. Install with: brew install eigen  OR  apt install libeigen3-dev)
+  $(warning Or pass: make EIGEN_INCLUDE=-I/path/to/eigen3)
+endif
 
-nn: read_data.o utils.o neural_network.o nn.o
-	$(CC) $(CFLAGS) read_data.o utils.o neural_network.o nn.o -o nn
+.PHONY: all nn bb clean
 
-read_data.o: read_data.cpp read_data.hpp
-	$(CC) $(CFLAGS) -c read_data.cpp
+all: nn bb
 
-utils.o: utils.cpp utils.hpp
-	$(CC) $(CFLAGS) -c utils.cpp
+nn: $(BUILDDIR)/read_data.o $(BUILDDIR)/utils.o $(BUILDDIR)/neural_network.o $(BUILDDIR)/nn.o
+	$(CXX) $(CXXFLAGS) $^ -o $(BUILDDIR)/nn
 
-neural_network.o: neural_network.cpp neural_network.hpp
-	$(CC) $(CFLAGS) -c neural_network.cpp
+bb: $(BUILDDIR)/utils.o $(BUILDDIR)/bb.o
+	$(CXX) $(CXXFLAGS) $^ -o $(BUILDDIR)/bb
 
-bb.o: bb.cpp define.hpp utils.hpp 
-	$(CC) $(CFLAGS) -c bb.cpp
+$(BUILDDIR)/read_data.o: $(SRCDIR)/read_data.cpp $(SRCDIR)/read_data.hpp $(SRCDIR)/define.hpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c $(SRCDIR)/read_data.cpp -o $@
 
-nn.o: nn.cpp define.hpp read_data.hpp utils.hpp neural_network.hpp 
-	$(CC) $(CFLAGS) -c nn.cpp
+$(BUILDDIR)/utils.o: $(SRCDIR)/utils.cpp $(SRCDIR)/utils.hpp $(SRCDIR)/define.hpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c $(SRCDIR)/utils.cpp -o $@
 
+$(BUILDDIR)/neural_network.o: $(SRCDIR)/neural_network.cpp $(SRCDIR)/neural_network.hpp $(SRCDIR)/utils.hpp $(SRCDIR)/define.hpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c $(SRCDIR)/neural_network.cpp -o $@
 
-# To start over from scratch, type 'make clean'. This removes the executable file, 
-# as well as old .o objectfiles and *~ backup files:
-clean: 
-	$(RM) nn bb file *.o *~
+$(BUILDDIR)/bb.o: $(SRCDIR)/bb.cpp $(SRCDIR)/define.hpp $(SRCDIR)/utils.hpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c $(SRCDIR)/bb.cpp -o $@
+
+$(BUILDDIR)/nn.o: $(SRCDIR)/nn.cpp $(SRCDIR)/define.hpp $(SRCDIR)/read_data.hpp $(SRCDIR)/utils.hpp $(SRCDIR)/neural_network.hpp
+	@mkdir -p $(BUILDDIR)
+	$(CXX) $(CXXFLAGS) -c $(SRCDIR)/nn.cpp -o $@
+
+clean:
+	$(RM) -r $(BUILDDIR)
