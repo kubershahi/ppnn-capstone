@@ -37,8 +37,9 @@ test
 # macOS
 .DS_Store
 
-# Dataset (extracted files)
-datasets/mnist/
+# Dataset
+/datasets/**
+!datasets/.gitkeep
 
 # Editor
 .vscode/
