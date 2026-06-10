@@ -1,9 +1,16 @@
 # Privacy-Preserving Neural Networks (PPNN)
 
-Capstone project on **privacy-preserving machine learning** for neural network training in a **three-party secure computation (3PC)** setting — combining a from-scratch neural network with cryptographic building blocks from [SecureNN](https://eprint.iacr.org/2018/442) and [SecureML](https://ieeexplore.ieee.org/document/7958569).
+[![Report](https://img.shields.io/badge/Report-PDF-D32F2F?logo=adobeacrobatreader&logoColor=white)](docs/Capstone_Report.pdf)
+[![Presentation](https://img.shields.io/badge/Presentation-PDF-D32F2F?logo=adobeacrobatreader&logoColor=white)](docs/Capstone_Presentation.pdf)
+[![PPNN](https://img.shields.io/badge/PPNN-Privacy--Preserving%20Neural%20Networks-5B4FCF)](#overview)
+[![Capstone](https://img.shields.io/badge/Capstone-Ashoka%20University-8B1538)](https://www.ashoka.edu.in/)
+[![C++](https://img.shields.io/badge/C++-11-00599C?logo=c%2B%2B&logoColor=white)](src/)
+[![Python](https://img.shields.io/badge/Python-notebooks-3776AB?logo=python&logoColor=white)](notebooks/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Author:** Kuber Shahi · Ashoka University · December 2021  
-**Advisors:** Dr. Mahavir Jhawar, Dr. Debayan Gupta
+A capstone project at Ashoka University (December 2021), completed by Kuber Shahi under the supervision of Dr. Mahavir Jhawar and Dr. Debayan Gupta.
+
+This repository hosts the final report, presentation, proof-of-concept code, and documentation from that work on **privacy-preserving machine learning**—including a from-scratch neural network trained on MNIST and cryptographic building blocks from [SecureNN](https://eprint.iacr.org/2018/442) and [SecureML](https://ieeexplore.ieee.org/document/7958569) for neural network training in a **three-party secure computation (3PC)** setting.
 
 ---
 
